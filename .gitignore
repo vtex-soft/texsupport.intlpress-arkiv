@@ -1,4 +1,12 @@
 *.aux
 *.log
 *.out
-arkiv_sample.bat
+*.err
+*.fls
+*.dvi
+*.ps
+*.gz
+www
+*.bat
+arkiv_sample_vtex.pdf  
+arkiv1bg.eps  

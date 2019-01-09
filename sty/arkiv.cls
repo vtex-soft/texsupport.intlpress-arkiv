@@ -195,6 +195,10 @@
 \csuse{\fmt@name @load@printead}
 \csuse{\fmt@name @load@environment@saving}
 
+\@if@vtex@in@house{}{%
+  \RequirePackage{graphicx}
+  }
+
 %% >>> Metadata >>>
 \def\@publisher{International Press, Inc.}
 \def\@publisheraddress{387 Somerville Avenue, Somerville, MA 02143, U.S.A.}
