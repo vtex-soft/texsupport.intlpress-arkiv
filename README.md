@@ -1,16 +1,11 @@
-VMSTA journal document class.
+ARKIV journal document class.
  
-[https://www.vmsta.org/journal/VMSTA](https://www.vmsta.org/journal/VMSTA)
-
 Distributed files include:
 
-- `doc/vmstadoc.pdf` - author's instructions
-- `vmsta_sample.tex` - a sample article
-- `vmsta_sample.pdf` - a sample article
-- `vmsta_template.tex` - a template file
-- `sty/vmsta.cls` - journal class file
-- `bib/vmsta-mathphys.bst` - Bibtex style
-- `bib/biblio.bib` - Bibtex DB sample
+- `arkiv_sample.tex` - a sample article source
+- `arkiv_sample.pdf` - a sample article output
+- `arkiv_template.tex` - a source template file
+- `sty/arkiv.cls` - journal class file
 
 Compile:
 
@@ -20,8 +15,4 @@ or
 
     `pdflatex paper`
 	
-Produce bbl:
-
-    `bibtex paper`
-
-VTeX UAB, 2014/10/02
+VTeX UAB, 2019/01/09
