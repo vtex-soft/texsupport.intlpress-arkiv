@@ -196,6 +196,7 @@
 \csuse{\fmt@name @load@environment@saving}
 
 \@if@vtex@in@house{}{%
+  %\RequirePackage{environ}
   \RequirePackage{graphicx}
   }
 
@@ -294,27 +295,27 @@
   %
   \newtoks\document@aug
   \long\def\aug#1\end{%
-      \global\document@aug={#1}%
-      %
-      \let\author@prefix\relax
-      \renewcommand\author[2][]{%
-        \author@prefix
-        ##2%
-        \def\author@prefix{,\space}%
-        }%
-      \newcommand\ead[2][]{}%
-      \newcommand\address[2][]{}%
-      %
-      \vskip\baselineskip
-      \begin{center}%
-        \bgroup
-          \author@block@font
-          \the\document@aug
-        \egroup
-      \end{center}%
-      \par
-      \end{aug}%
-      \@gobble% gobbling parameter {aug} left after the \end
+    \global\document@aug={#1}%
+    %
+    \let\author@prefix\relax
+    \renewcommand\author[2][]{%
+      \author@prefix
+      ##2%
+      \def\author@prefix{,\space}%
+      }%
+    \newcommand\ead[2][]{}%
+    \newcommand\address[2][]{}%
+    %
+    \vskip\baselineskip
+    \begin{center}%
+      \bgroup
+        \author@block@font
+        \the\document@aug
+      \egroup
+    \end{center}%
+    \par
+    \end{aug}%
+    \@gobble% gobbling parameter {aug} left after the \end
     }%
   %
   \newenvironment{abstract}{%
@@ -746,8 +747,21 @@
 \edef\sv@parindent{\the\parindent}
 \newtoks\document@keyword
 \@if@vtex@in@house{%
-  \get@env@toks{keyword}{\document@keyword}
-  }{}
+    \get@env@toks{keyword}{\document@keyword}%
+  }{%
+    \def\keyword{%
+      \@ifnextchar[%
+        {\@keyword}%
+        {\@keyword[]}%
+      }%
+    \long\def\@keyword[#1]#2\end{%
+      \document@keyword={#2}%
+      \footnotetext{\the\document@keyword}%
+      %
+      \end{keyword}%
+      \@gobble% gobbling parameter {keyword} left after the \end
+      }%
+  }
 \def\print@keywords{%
   \bgroup
     \parindent\sv@parindent
