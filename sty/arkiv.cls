@@ -329,9 +329,9 @@
         \textbf{\abstractname}%
     }{%
         \normalfont\normalsize
-        \vskip1.8\baselineskip
+        %\vskip1.8\baselineskip
       \egroup
-      \vskip\baselineskip
+      %\vskip\baselineskip
     }%
   }
 \def\pretitle#1{\gdef\@pretitle{#1}}
@@ -2704,7 +2704,14 @@
   }
 \@if@vtex@in@house{}{%
   \AtBeginDocument{%
-    \preto\@begin@frontmatter@hook{\ps@title}%
+    %\preto\@begin@frontmatter@hook{\ps@title}%
+    %\appto\ps@title{%
+    %  \appto\@evenhead{\ps@headings}%
+    %  \appto\@oddhead{\ps@headings}%
+    %  \appto\evenheadline{\ps@headings}%
+    %  \appto\oddheadline{\ps@headings}%
+    %  }%
+    \let\ps@last\ps@headings
     }%
   }
 
