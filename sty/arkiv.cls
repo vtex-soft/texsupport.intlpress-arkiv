@@ -31,7 +31,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{arkiv}
-    [2018/04/16, v0.40 IntlPress/Arkiv class]
+    [2019/01/10, v0.41 IntlPress/Arkiv class]
 \def\fmt@name{arkiv}
 
 \newcommand\@ptsize{}
@@ -154,6 +154,7 @@
   }{%
     %\input\fmt@name.cfg
   }
+
 \paperwidth170mm
 \paperheight240mm
 \newlength\trimwidth
@@ -196,8 +197,7 @@
 \csuse{\fmt@name @load@environment@saving}
 
 \@if@vtex@in@house{}{%
-  %\RequirePackage{environ}
-  \RequirePackage{graphicx}
+  \RequirePackage{graphicx}%
   }
 
 %% >>> Metadata >>>
@@ -254,7 +254,7 @@
   \RequirePackage{fnotes}%
   \def\fnoterule{\footnoterule}%
   \setlength{\skip\noteins}{11\p@\@plus2\p@}%
-%
+  %
   \long\def\fnote#1{%
     \insert\noteins{%
       \reset@font\footnotesize
@@ -1680,7 +1680,7 @@
 
 %% >>> Bibliography >>>
 \@if@vtex@in@house{}{%
-  \def\alphanumeral{%  
+  \def\alphanumeral{%
     \def\bibnumfmt##1{[##1]}%
     }%
   \ifx\bptok\undefined
