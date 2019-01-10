@@ -755,8 +755,17 @@
         {\@keyword[]}%
       }%
     \long\def\@keyword[#1]#2\end{%
-      \document@keyword={#2}%
-      \footnotetext{\the\document@keyword}%
+      \@firstkwdtrue
+      \document@keyword={\ignorespaces #2}%
+      \footnotetext{%
+        \setkeys{keyword}{#1}%
+        \bgroup
+          \keyword@titlefont
+          \csname keyword@\keyword@class\endcsname
+          \csname keyword@titlesep\endcsname
+        \egroup
+        \the\document@keyword
+        }%
       %
       \end{keyword}%
       \@gobble% gobbling parameter {keyword} left after the \end
