@@ -276,6 +276,10 @@
   \newenvironment{frontmatter}{}{%
     \if!\@thanks!%
     \else
+      \if!\the\document@keyword!%
+      \else
+        \footnotetext{\footnoterule}%
+      \fi
       \@thanks
     \fi
     }%
@@ -748,6 +752,26 @@
 \newtoks\document@keyword
 \@if@vtex@in@house{%
     \get@env@toks{keyword}{\document@keyword}%
+    \def\print@keywords{%
+      \bgroup
+        \parindent\sv@parindent
+        \rule\z@\footnotesep
+        \long\def\start@tex@env##1[##2]##3\end@tex@env{%
+          \@firstkwdtrue
+          \setkeys{keyword}{##2}%
+          \bgroup
+            \keyword@titlefont
+            \csname keyword@\keyword@class\endcsname
+            \csname keyword@titlesep\endcsname
+          \egroup
+          \ignorespaces
+          ##3%
+          \csname keyword@postfix\endcsname
+          \par
+          }%
+        \the\document@keyword
+      \egroup
+      }%
   }{%
     \def\keyword{%
       \@ifnextchar[%
@@ -755,41 +779,23 @@
         {\@keyword[]}%
       }%
     \long\def\@keyword[#1]#2\end{%
-      \@firstkwdtrue
-      \document@keyword={\ignorespaces #2}%
-      \footnotetext{%
-        \setkeys{keyword}{#1}%
-        \bgroup
-          \keyword@titlefont
-          \csname keyword@\keyword@class\endcsname
-          \csname keyword@titlesep\endcsname
+      \bgroup
+        \@firstkwdtrue
+        \global\document@keyword={\ignorespaces #2}%
+        \footnotetext{%
+          \setkeys{keyword}{#1}%
+          \bgroup
+            \keyword@titlefont
+            \csname keyword@\keyword@class\endcsname
+            \csname keyword@titlesep\endcsname
+          \egroup
+          \the\document@keyword
+          }%
         \egroup
-        \the\document@keyword
-        }%
       %
       \end{keyword}%
       \@gobble% gobbling parameter {keyword} left after the \end
       }%
-  }
-\def\print@keywords{%
-  \bgroup
-    \parindent\sv@parindent
-    \rule\z@\footnotesep
-    \long\def\start@tex@env##1[##2]##3\end@tex@env{%
-      \@firstkwdtrue
-      \setkeys{keyword}{##2}%
-      \bgroup
-        \keyword@titlefont
-        \csname keyword@\keyword@class\endcsname
-        \csname keyword@titlesep\endcsname
-      \egroup
-      \ignorespaces
-      ##3%
-      \csname keyword@postfix\endcsname
-      \par
-      }%
-    \the\document@keyword
-  \egroup
   }
 %% <<< Frontmatter <<<
 
