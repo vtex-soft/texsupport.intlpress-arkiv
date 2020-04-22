@@ -21,6 +21,7 @@ or
 
 Bug reports:
 
-: Please submit bug report, issues or feature requests to `latex-support@vtex.lt`.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Please submit bug report, issues or feature requests to `latex-support@vtex.lt`.
 
 VTeX UAB, 2019/01/09
