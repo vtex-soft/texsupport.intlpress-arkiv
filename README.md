@@ -21,10 +21,6 @@ or
 
 Bug reports:
 
-<ul>
-  <li style="list-style-type: none;">
-    Please submit bug report, issues or feature requests to <a href="mailto:latex-support@vtex.lt">latex-support@vtex.lt</a>.
-  </li>
-</ul>
+: Please submit bug report, issues or feature requests to `latex-support@vtex.lt`.
 
 VTeX UAB, 2019/01/09
