@@ -22,7 +22,7 @@ or
 Bug reports:
 
 <p style="margin-left: 34pt;">
-Please submit bug report, issues or feature requests to<br/>
+Please submit bug report, issues or feature requests to
 <a href="mailto:latex-support@vtex.lt">latex-support@vtex.lt</a>.
 </p>
 
