@@ -1,5 +1,5 @@
 ARKIV journal document class.
- 
+
 Distributed files include:
 
 - `arkiv_sample.tex` - a sample article source
@@ -14,5 +14,9 @@ Compile:
 or
 
     `pdflatex paper`
-	
+
+Bug reports:
+
+Please submit bug report, issues or feature requests to `latex-support@vtex.lt`.
+
 VTeX UAB, 2019/01/09
