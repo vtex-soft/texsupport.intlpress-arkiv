@@ -1,4 +1,4 @@
-ARKIV journal document class.
+Arkiv för Matematik journal document class.
 
 Distributed files include:
 
