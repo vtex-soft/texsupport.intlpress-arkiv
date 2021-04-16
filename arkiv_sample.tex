@@ -1,16 +1,21 @@
+\RequirePackage{etoolbox}
+\csdef{input@path}{%
+ {sty/},% cls file
+ {img/},% images
+ {bib/}%  bibdata,bibstyle
+}
+
 \documentclass{arkiv}
 
-\pubyear{2019}
+\pubyear{2021}
 \volume{1}
 \issue{1}
 \firstpage{1}
-\lastpage{14}
+\lastpage{8}
 \doi{10.4310/ARKIV.2019.v01.n1.a1}
-\aid{}
 
-\newtheorem{thm}{Theorem}
-\newtheorem{cor}{Corollary}
-\newtheorem{defin}{Definition}
+
+
 
 \def\SM#1#2{\sum_{#1\in #2}}
 \def\FL#1{\left\lfloor #1 \right\rfloor}
@@ -25,9 +30,9 @@ cuius exemplum demonstrat non solum rempublicam ad vitam opusque scriptoris pert
 %\title{\thanks{}}
 
 \begin{aug}
-\author[1]{\inits{F.}\fnms{First-Name1}~\snm{Surname-1}\ead[label=e1]{first@somewhere.com}}%
-\author[2]{\inits{S.}\fnms{First-Name2}~\snm{Surname-2}\ead[label=e2]{second@somewhere.com}}%
-\author[2]{\inits{T.}\fnms{First-Name3}~\snm{Surname-3}\ead[label=e3]{third@somewhere.com}}%
+\author[1]{\inits{F.}\fnms{First-Name1}~\snm{Surname1}\ead[label=e1]{first@somewhere.com}}%
+\author[2]{\inits{S.}\fnms{First-Name2}~\snm{Surname2}\ead[label=e2]{second@somewhere.com}}%
+\author[2]{\inits{T.}\fnms{First-Name3}~\snm{Surname3}\ead[label=e3]{third@somewhere.com}}%
 %\author[2]{\inits{}\fnms{}~\snm{}\ead[label=e3]{}}%
 %
 \address[1]{\institution{Institution of the first author}\\
@@ -43,11 +48,10 @@ cuius exemplum demonstrat non solum rempublicam ad vitam opusque scriptoris pert
 \cny{Country23}}
 %
 %\address[3]{\dept{}\\ \institution{}\\ \addr{}\\ \city{}\\ \cny{}}
-
 \end{aug}
 
-%\runningauthor{}% auto-generated if not indicated
-%\runningtitle{}% auto-generated if not indicated
+%\runningauthor{}
+%\runningtitle{}
 %\dedication{}
 
 \begin{abstract}
@@ -60,7 +64,7 @@ benedixit filiis tuis in te.
 \end{abstract}
 
 \begin{keyword}
-\kwd{Exemplum}
+\kwd{exemplum}
 \kwd{\LaTeX}
 \end{keyword}
 %
@@ -209,8 +213,8 @@ inter homines et deum, pro culpis remedium.
 
 
 \begin{table}
-\caption{Table caption}\label{tbl-2}
-\begin{tabular}{lllllllll}
+\caption{Table caption.}\label{tbl-2}
+\begin{tabular}{lrrrlrlll}
 \hline
 Star &
 Height &
@@ -222,11 +226,11 @@ $R_{max}$ &
 $R_{min}$ &
 $P$  \\
 \hline
-1 &33472.5 &-0.1 &0.4  &53 &27.4 &2.065  &1.940 &3.900\\
-2 &27802.4 &-0.3 &-0.2 &60 &3.7  &1.628  &1.510 &2.156\\
+1 &33472.5 &$-0.1$ &0.4  &53 &27.4 &2.065  &1.940 &3.900\\
+2 &27802.4 &$-0.3$ &$-0.2$ &60 &3.7  &1.628  &1.510 &2.156\\
 3 &29210.6 &0.9  &0.3  &60 &3.4  &1.622  &1.551 &2.159\\
-4 &32733.8 &-1.2 &-0.5 &41 &54.8 &2.282  &2.156 &4.313\\
-5 & 9607.4 &-0.4 &-0.4 &60 &1.4  &1.669  &1.574 &2.343\\
+4 &32733.8 &$-1.2$ &$-0.5$ &41 &54.8 &2.282  &2.156 &4.313\\
+5 & 9607.4 &$-0.4$ &$-0.4$ &60 &1.4  &1.669  &1.574 &2.343\\
 6 &31638.6 &1.6  &0.1  &39 &315.2 & 3.433 &3.075 &7.488\\
 \hline
 \end{tabular}
@@ -288,7 +292,7 @@ postquam sederitis, qui manducatis panem doloris.
 \caption{%
 Nisi custodierit civitatem, frustra vigilat qui custodit eam. Vanum
 est vobis ante lucem surgere: surgite postquam sederitis, qui
-manducatis panem doloris}\label{f1} %% no full stop at the end
+manducatis panem doloris.}\label{f1} %% no full stop at the end
 \end{figure}
 
 
@@ -336,7 +340,7 @@ consurgens ut aurora rutilat ut beneficam (Table~\ref{t1}).
 
 
 \begin{table}[t]
-\caption{One-column table}\label{t1}
+\caption{One-column table.}\label{t1}
 \begin{tabular}{@{}ll}
 \hline
 Wavelength range & 0.35--1.7~$\mu\textrm{m}$ \\
@@ -384,12 +388,12 @@ many potentis: Ita filii excussorum.
 Beatus vir qui implevit desiderium
 suum ex pisis: non confundetus cum loquetur inimicis suis in porta.
 
-\begin{thm}
+\begin{theorem}
 Nisi custodierit civitatem,
 frustra vigilat qui custodit eam. Cum dederit dilectis suis somnum:
 ecce haereditas filii: merces, fructus ventris. Sicut sagittae in
 many potentis: Ita filii excussorum.
-\end{thm}
+\end{theorem}
 
 
 \begin{proof}
@@ -401,11 +405,11 @@ ut benefi-cam.  Dic nam esta pulchra ut luna electa, ut sol replet
 laetitia terras, caelos.
 
 
-\begin{defin}[\cite{SM}]\label{clas}
+\begin{definition}[\cite{SM}]\label{clas}
 Vanum est vobis ante lucem surgere: surgite postquam
 sederitis, qui manducatis panem doloris. Praestet nobis deus, pater
 hoc et filius et mater praestet nobis.
-\end{defin}
+\end{definition}
 
 \begin{lemma}
 Maria virgo illa dulcis, praedicata de
@@ -417,10 +421,10 @@ felix porta, per quam mors fuit expulsa, introduxit autem vitam.
 The lemma is proved.
 \end{proof}
 
-\begin{thm}[Quantitative theorem]
+\begin{theorem}[Quantitative theorem]
 Quae
 semper tutum est medium inter homines et deum, pro culpis remedium.
-\end{thm}
+\end{theorem}
 
 \begin{proof}
 The theorem is proved.
@@ -470,42 +474,14 @@ beneficam.
 
 %b1 ###
 \bibitem[SM]{SM}
-\begin{barticle}
-\bauthor{\bsnm{Smith}, \binits{S.}},
-\batitle{A Brief Introduction to Representation Theory},
-\bjtitle{Proc. London Math. Soc.}
-\bvolume{20}
-(\byear{1980}),
-\bfpage{198}--\blpage{219}.
-\end{barticle}
-%
-\OrigBibText
-Smith, S.,
-{\em A Brief Introduction to Representation Theory},
-Proc. LMS {\bf40}
-(3), (1980), 198-219.
-\endOrigBibText
-\bptok{structpyb}
+Smith, S.,  A Brief Introduction to Representation Theory,
+\textit{Proc. London Math. Soc.} \textbf{40} (1980), 198--219.
 \endbibitem
 
 %b2 ###
 \bibitem[BP11]{BP11}
-\begin{barticle}
-\bauthor{\bsnm{Baker}, \binits{M.}} and
-\bauthor{\bsnm{Potter}, \binits{M.}},
-\batitle{Modular Representations of Contraction Groups},
-\bjtitle{Ann. Inst. Fourier (Grenoble)}
-\bvolume{51}
-(\byear{2012}),
-\bfpage{1507}--\blpage{1542}.
-\end{barticle}
-%
-\OrigBibText
-Baker, M. and Potter, M.,
-{\em Modular Representations of Contraction Groups}, Ann. Inst. Fourier,
-Grenoble {\bf61}, 6 (2011), 1507-1542.
-\endOrigBibText
-\bptok{structpyb}
+Baker, M. and Potter, M., Modular Representations of Contraction Groups, \textit{Ann. Inst. Fourier
+(Grenoble)} \textbf{51} (2012), 1507--1542.
 \endbibitem
 
 \end{thebibliography}
