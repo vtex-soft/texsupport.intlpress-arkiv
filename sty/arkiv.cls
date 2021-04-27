@@ -31,7 +31,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{arkiv}
-    [2019/01/10, v0.41 IntlPress/Arkiv class]
+    [2021/04/16, v0.44 IntlPress/Arkiv class]
 \def\fmt@name{arkiv}
 
 \newcommand\@ptsize{}
@@ -153,6 +153,16 @@
     \input\fmt@name-vtex.cfg
   }{%
     %\input\fmt@name.cfg
+    \AtBeginDocument{%
+      \appto\endfrontmatter{
+        \ifdefined\@runningauthor
+          \markboth{\@runningauthor}{\@runningauthor}%
+        \fi
+        \ifdefined\@runningtitle
+          \markright{\@runningtitle}%
+        \fi
+        }%
+      }%
   }
 
 \paperwidth170mm
@@ -200,6 +210,10 @@
   \RequirePackage{graphicx}%
   }
 
+\@if@vtex@in@house{%
+  \usepackage{authorquery}%
+  }{}%
+
 %% >>> Metadata >>>
 \def\@publisher{International Press, Inc.}
 \def\@publisheraddress{387 Somerville Avenue, Somerville, MA 02143, U.S.A.}
@@ -224,6 +238,9 @@
 \def\lastpage#1{%
   \gdef\@lastpage{#1}%
   \setcounter{lastpage}{#1}%
+  }
+\@if@vtex@in@house{}{%
+  \gdef\@doi{}%
   }
 \def\doi#1{%
   \gdef\@doi{#1}%
@@ -346,7 +363,7 @@
       }%
     \def\@thanks{}%
     \let\and\@auand
-    \thispagestyle{empty}
+    \thispagestyle{empty}%
     \@maketitle
     \print@abstract
     \edef\@tempa{\the\document@keyword}%
@@ -370,10 +387,10 @@
       \markright{\@runningtitle}%
     \else
       \let\thanks\@gobble
-      \markright{\@title}%%
+      \markright{\@title}%
     \fi
   \endgroup
-  \setcounter{footnote}{0}
+  \setcounter{footnote}{0}%
   \global\let\thanks\relax
   \global\let\maketitle\relax
   \global\let\@maketitle\relax
@@ -410,12 +427,7 @@
       \begin{center}\print@author@block\par\end{center}%
       \if!\@dedic!%
       \else
-        \par
-        \vskip3.5mm
-        \dedication@font
-        \begin{center}%
-        \@dedic\par
-        \end{center}%
+        \@dedic@fmt
       \fi
       \vskip5mm
       }{}%
@@ -511,7 +523,9 @@
         \noexpand\csuse{##1}%
         }%
       }%
-    \expandafter\docsvlist\expandafter{\author@block@list}%
+    \ifx\author@block@list\relax\else
+      \expandafter\docsvlist\expandafter{\author@block@list}%
+    \fi
     \the\author@list
     \par
   \egroup
@@ -546,7 +560,9 @@
       \def\do##1{%
         \seperate@address@block@fmt{##1}%
         }%
-      \expandafter\docsvlist\expandafter{\author@block@list}%
+      \ifx\author@block@list\relax\else
+        \expandafter\docsvlist\expandafter{\author@block@list}%
+      \fi
     \end{multicols}%
     }{}%
   }%
@@ -639,20 +655,22 @@
   }
 \def\print@abstract{%
   \bgroup
-  \abstract@font
-  \abstract@fmt{\abstractname}%
-  \space
-  \abovedisplayskip=2mm plus1pt minus 1pt%
-  \belowdisplayskip=2mm plus1pt minus 1pt%
-  \abovedisplayshortskip=0.0mm%
-  \belowdisplayshortskip=2mm plus1pt minus 1pt%
-  \long\def\start@tex@env##1[##2]##3\end@tex@env{%
-    ##3%
-    \par
-    \normalfont\normalsize
-    \vskip1.8\baselineskip
-    }%
-  \the\document@abstract
+    \ifdefined\document@abstract
+      \abstract@font
+      \abstract@fmt{\abstractname}%
+      \space
+      \abovedisplayskip=2mm plus1pt minus 1pt%
+      \belowdisplayskip=2mm plus1pt minus 1pt%
+      \abovedisplayshortskip=0.0mm%
+      \belowdisplayshortskip=2mm plus1pt minus 1pt%
+      \long\def\start@tex@env##1[##2]##3\end@tex@env{%
+        ##3%
+        \par
+        \normalfont\normalsize
+        \vskip1.8\baselineskip
+        }%
+      \the\document@abstract
+    \fi
   \egroup
   }
 %% history month - full name
@@ -864,8 +882,8 @@
 \topmargin13mm
 \headheight2mm
 \headsep7mm
-\evensidemargin23.5mm
-\oddsidemargin18.5mm
+\evensidemargin24mm
+\oddsidemargin19mm
 \parindent7.2mm
 
 \def\@listi{%
@@ -1042,7 +1060,20 @@
 \def\journalname#1{\gdef\@journalname{#1}}
 
 \def\dedicationfont{\small\itshape}
-\def\dedication#1{\gdef\@dedic{#1}}
+\def\@dedic@fmt{%
+  \par
+  \vskip3.5mm
+  \dedication@font
+  \begin{center}%
+    \@dedic\par
+  \end{center}%
+  }
+\def\dedication#1{%
+  \gdef\@dedic{#1}%
+  \@if@vtex@in@house{}{%
+    \@dedic@fmt
+    }%
+  }
 \def\@dedic{}
 
 \let\@date\undefined
@@ -1184,11 +1215,6 @@
 \def\labelitemii {\textendash}
 \def\labelitemiii{\textasteriskcentered}
 \def\labelitemiv {{\footnotesize +}}
-
-\RequirePackage{enumitem}
-\setlist{wide=\dimexpr\parindent+\labelwidth\relax,labelsep=3pt,topsep=\z@,parsep=\z@,itemsep=\z@,partopsep=\z@,noitemsep,nosep,
-  format=\normalfont}
-\setlist[2]{leftmargin=\parindent,labelindent*=10pt}
 
 \if@spthms
   %% definition of the "\spnewtheorem" command.
@@ -1678,97 +1704,6 @@
   }
 \let\l@table\l@figure
 
-%% >>> Bibliography >>>
-\@if@vtex@in@house{}{%
-  \def\alphanumeral{%
-    \def\bibnumfmt##1{[##1]}%
-    }%
-  \ifx\bptok\undefined
-    \def\bptok#1{\ignorespaces}%
-  \fi
-  }
-\csuse{\fmt@name @load@bibliography@settings}
-\newdimen\bibindent
-\setlength\bibindent{\parindent}
-\def\@biblabel#1{#1.}
-\def\@lbibitem[#1]#2{%
-  \item[{[#1]}\hfill]%
-  \if@filesw
-    {%
-      \let\protect\noexpand
-      \immediate\write\@auxout{\string\bibcite{#2}{#1}}%
-    }
-  \fi
-  \ignorespaces
-  }
-\newcount\@tempcntc
-\def\@citex[#1]#2{%
-  \if@filesw
-    \immediate\write\@auxout{\string\citation{#2}}%
-  \fi
-  \@tempcnta\z@
-  \@tempcntb\m@ne
-  \def\@citea{}%
-  \@cite{%
-    \@for\@citeb:=#2\do{%
-      \@ifundefined{b@\@citeb}
-        {%
-          \@citeo
-          \@tempcntb\m@ne
-          \@citea
-          \def\@citea{,}%
-          {\bfseries ?}%
-          \@warning{Citation `\@citeb' on page \thepage \space undefined}%
-        }{%
-          \setbox\z@\hbox{\global\@tempcntc0\csname b@\@citeb\endcsname\relax}%
-          \ifnum\@tempcntc=\z@
-            \@citeo
-            \@tempcntb\m@ne
-            \@citea
-            \def\@citea{,}%
-            \hbox{\csname b@\@citeb\endcsname}%
-          \else
-            \advance\@tempcntb\@ne
-            \ifnum\@tempcntb=\@tempcntc
-            \else
-              \advance\@tempcntb\m@ne
-              \@citeo
-              \@tempcnta\@tempcntc
-              \@tempcntb\@tempcntc
-            \fi
-          \fi
-        }%
-      }%
-    \@citeo
-    }%
-  {#1}%
-  }
-\def\@citeo{%
-  \ifnum\@tempcnta>\@tempcntb
-  \else
-    \@citea
-    \def\@citea{,\hskip0.1em\ignorespaces}%
-    \ifnum\@tempcnta=\@tempcntb
-      \the\@tempcnta
-    \else
-      {%
-        \advance\@tempcnta\@ne
-        \ifnum\@tempcnta=\@tempcntb
-        \else
-          \def\@citea{--}%
-        \fi
-        \advance\@tempcnta\m@ne
-        \the\@tempcnta
-        \@citea
-        \the\@tempcntb
-      }%
-    \fi
-  \fi
-  }
-\newcommand\newblock{\hskip .11em\@plus.33em\@minus.07em}
-\let\@openbib@code\@empty
-%% <<< Bibliography <<<
-
 \newenvironment{theindex}
   {%
     \if@twocolumn
@@ -1780,7 +1715,9 @@
     \columnsep 35\p@
     \twocolumn[\section*{\indexname}]%
     \@mkboth{\indexname}{\indexname}%
-    \thispagestyle{plain}%
+    \expandafter\ifnum\the\c@page>\@firstpage\relax
+      \thispagestyle{plain}%
+    \fi
     \parindent\z@
     \parskip\z@ \@plus .3\p@\relax
     \let\item\@idxitem
@@ -2039,7 +1976,9 @@
 %% >>> from ml-afm-author.sty >>>
 \usepackage[leqno]{amsmath}
 \usepackage{amssymb}
-\usepackage[cmtip]{xypic}
+\@if@vtex@in@house{%
+  \usepackage[cmtip]{xypic}%
+  }{}
 \def\DOIt{}
 \def\doit@xtcode{}
 \def\DOImsnr#1{}
@@ -2600,10 +2539,16 @@
 
 %% All special font sizes should be defined here
 \def\normalsize{\fontsize{10pt}{4.53mm}\selectfont}
+\def\large{\fontsize{12pt}{5.44mm}\selectfont}
+\def\Large{\fontsize{15pt}{6.8mm}\selectfont}
+\def\LARGE{\fontsize{17pt}{7.7mm}\selectfont}
+\def\huge{\fontsize{22pt}{9.97mm}\selectfont}
+\def\Huge{\fontsize{24pt}{10.87mm}\selectfont}
 \def\running@font{\normalfont\fontsize{8pt}{9pt}\selectfont}
 \def\small{\normalfont\fontsize{8pt}{9pt}\selectfont}
 \def\footnotesize{\normalfont\fontsize{8pt}{9pt}\selectfont}
 \let\scriptsize\footnotesize
+\let\tiny\footnotesize
 \def\title@font{\usefont{OT1}{ml-cmr}{m}{n}\fontsize{17.22pt}{6.6mm}\selectfont}
 \def\author@font{\normalfont\normalsize}
 \def\dedication@font{\normalfont\fontsize{9pt}{10dd}\selectfont}
@@ -2612,6 +2557,11 @@
 \def\subsection@font{\normalfont\fontsize{10pt}{12pt}\spaceskip0.35em plus0.1em minus0.1em\bfseries\mathversion{bold}\selectfont}
 \def\bib@font{\normalfont\fontsize{9pt}{10.93pt}\spaceskip0.3em plus0.15em minus0.1em\selectfont}
 \def\inst@font{\normalfont\fontsize{9pt}{3.85mm}\selectfont}
+
+\RequirePackage{enumitem}
+\setlist{wide=\dimexpr\parindent+\labelwidth\relax,labelsep=3pt,topsep=\z@,parsep=\z@,itemsep=\z@,partopsep=\z@,noitemsep,nosep,
+  format=\normalfont}
+\setlist[2]{leftmargin=\parindent,labelindent*=10pt}
 
 %% Some math skips
 \abovedisplayskip=3 mm plus6pt minus 4pt
@@ -2791,7 +2741,9 @@
 \AtEndDocument{%
   \print@address@block
   \print@history
-  \thispagestyle{last}%
+  \expandafter\ifnum\the\c@page>\@firstpage\relax
+    \thispagestyle{last}%
+  \fi
   \write\@auxout{\string\xdef\string\@endpage\string{\thepage\string}}%
   \write\@auxout{\string\xdef\string\@authorcount\string{\the\c@auth\string}}%
   }
@@ -2801,17 +2753,23 @@
   \normalfont\normalsize
   }
 
-\@if@vtex@in@house{%
+%\@if@vtex@in@house{%
     \renewcommand\@makefntext[1]{%
-      \strut\kern7.2mm($^{\arabic{footnote}}$) #1%
-      }%
-  }{%
-    \renewcommand\@makefntext[1]{%
-      \noindent
-      \hb@xt@\bibindent{\hss\enspace}%
+      \expandafter\ifnum\the\c@footnote=0\relax
+        \noindent
+        \hb@xt@\bibindent{\hss\enspace}%
+      \else
+        \strut\kern7.2mm($^{\arabic{footnote}}$)
+      \fi
       #1%
       }%
-  }
+%  }{%
+%    \renewcommand\@makefntext[1]{%
+%      \noindent
+%      \hb@xt@\bibindent{\hss\enspace}%
+%      #1%
+%      }%
+%  }
 
 \def\@thanksdef#1xx{\gdef\@thanks{#1}}
 
@@ -2833,9 +2791,90 @@
 \nonfrenchspacing
 
 %% >>> Bibliography >>>
+\csuse{\fmt@name @load@bibliography@settings}
+\newcount\@tempcntc
+\def\@citex[#1]#2{%
+  \if@filesw
+    \immediate\write\@auxout{\string\citation{#2}}%
+  \fi
+  \@tempcnta\z@
+  \@tempcntb\m@ne
+  \def\@citea{}%
+  \@cite{%
+    \@for\@citeb:=#2\do{%
+      \@ifundefined{b@\@citeb}
+        {%
+          \@citeo
+          \@tempcntb\m@ne
+          \@citea
+          \def\@citea{,}%
+          {\bfseries ?}%
+          \@warning{Citation `\@citeb' on page \thepage \space undefined}%
+        }{%
+          \setbox\z@\hbox{\global\@tempcntc0\csname b@\@citeb\endcsname\relax}%
+          \ifnum\@tempcntc=\z@
+            \@citeo
+            \@tempcntb\m@ne
+            \@citea
+            \def\@citea{,}%
+            \hbox{\csname b@\@citeb\endcsname}%
+          \else
+            \advance\@tempcntb\@ne
+            \ifnum\@tempcntb=\@tempcntc
+            \else
+              \advance\@tempcntb\m@ne
+              \@citeo
+              \@tempcnta\@tempcntc
+              \@tempcntb\@tempcntc
+            \fi
+          \fi
+        }%
+      }%
+    \@citeo
+    }%
+  {#1}%
+  }
+\def\@citeo{%
+  \ifnum\@tempcnta>\@tempcntb
+  \else
+    \@citea
+    \def\@citea{,\hskip0.1em\ignorespaces}%
+    \ifnum\@tempcnta=\@tempcntb
+      \the\@tempcnta
+    \else
+      {%
+        \advance\@tempcnta\@ne
+        \ifnum\@tempcnta=\@tempcntb
+        \else
+          \def\@citea{--}%
+        \fi
+        \advance\@tempcnta\m@ne
+        \the\@tempcnta
+        \@citea
+        \the\@tempcntb
+      }%
+    \fi
+  \fi
+  }
+\newcommand\newblock{\hskip .11em\@plus.33em\@minus.07em}
+\let\@openbib@code\@empty
+
 \newif\if@firstbib\@firstbibtrue
 \newif\ifNAT@openbib
 
+\newdimen\bibindent
+\setlength\bibindent{\parindent}
+\def\@biblabel#1{#1.}
+\def\@lbibitem[#1]#2{%
+  \item[{[#1]}\hfill]%
+  \if@filesw
+    {%
+      \let\protect\noexpand
+      \immediate\write\@auxout{\string\bibcite{#2}{#1}}%
+    }
+  \fi
+  \ignorespaces
+  }
 \newdimen\biblabelwidth
 \newcounter{bibcount}
 \setcounter{bibcount}{0}
@@ -2845,7 +2884,25 @@
     \setlength{\biblabelwidth}{33\p@}%
     \setlength{\labelsep}{3\p@}%
     \setlength\bibindent{30\p@}% hangindent
-    \def\@lbibitem[#1]#2{\item [\hfill {[#1]}\hskip\labelsep]\if@filesw {\let \protect \noexpand \immediate \write \@auxout {\string \bibcite {#2}{#1}}} \fi \ignorespaces}%
+    \ifx\bptok\undefined
+      \def\bptok#1{\ignorespaces}%
+    \fi
+    \def\@listctr{bibcite}%
+    \newcounter{\@listctr}%
+    % orig definition: \bibitem ->\@ifnextchar [\@lbibitem \@bibitem
+    \def\bibitem{\refstepcounter{\@listctr }\@ifnextchar [\@lbibitem{\@lbibitem[\the\csname c@\@listctr\endcsname]}}
+    % numeric citations
+    \def\@lbibitem[#1]#2{%
+      \item [\hfill\@biblabel{#1}\hskip \labelsep ]%
+      \if@filesw
+        {\let \protect \noexpand \immediate \write \@auxout {\string \bibcite {#2}{#1}}}%
+      \fi
+      \ignorespaces
+      }%
+    \def\alphanumeral{%
+      % "nameyear" citations
+      \def\@biblabel##1{[##1]}%
+      }%
     \newenvironment{thebibliography}%
       {%
         \section*{\refname}%
@@ -2856,7 +2913,6 @@
             \setlength{\leftmargin}{\dimexpr\biblabelwidth + \labelsep + \bibindent\relax}%
             \setlength{\itemindent}{-\bibindent}%
             \setlength\labelwidth{\dimexpr\biblabelwidth + \labelsep\relax}%
-            %\settowidth\labelwidth{\dimexpr\biblabelwidth + \labelsep\relax}%
             }%
       }{%
         \egroup

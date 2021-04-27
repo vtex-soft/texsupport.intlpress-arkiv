@@ -1,11 +1,17 @@
+\RequirePackage{etoolbox}
+\csdef{input@path}{%
+ {sty/},% cls file
+ {img/},% images
+ {bib/}%  bibdata,bibstyle
+}
 \documentclass{arkiv}
 
 \pubyear{2021}
 \volume{}
 \issue{}
 \firstpage{1}
-\lastpage{}
-%\doi{}
+\lastpage{1}
+%\doi{} %will be included later
 
 
 \begin{document}
@@ -20,7 +26,7 @@
 %\author[2]{\inits{}\fnms{}~\snm{}\ead[label=e2]{}}%
 %\author[3]{\inits{}\fnms{}~\snm{}\ead[label=e3]{}}%
 %
-\address[1]{\dept{}\\ \institution{}\\ \addr{}\\ \city{}\\ \cny{}}
+\address[1]{\dept{} \institution{} \addr{} \city{} \cny{}}
 %\address[2]{\dept{}\\ \institution{}\\ \addr{}\\ \city{}\\ \cny{}}
 \end{aug}
 
@@ -50,10 +56,11 @@
 \section{} %S.c.
 
 
+
 %\alphanumeral  % use for [ABC] citation
 \begin{thebibliography}{}
 
-\bibitem{aom}
+\bibitem{Sm}
 %% bibitem data
 \endbibitem
 
