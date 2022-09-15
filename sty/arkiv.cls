@@ -31,8 +31,23 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{arkiv}
-    [2021/04/16, v0.44 IntlPress/Arkiv class]
+    [2022/09/14, v0.48 IntlPress/Arkiv class]
 \def\fmt@name{arkiv}
+
+\long\def\@@ifstrequal#1#2{%
+  \begingroup
+    \edef\etb@tempa{#1}%\edef\etb@tempa{\detokenize{#1}}%
+    \edef\etb@tempb{#2}%\edef\etb@tempb{\detokenize{#2}}%
+    \ifx\etb@tempa\etb@tempb
+      \aftergroup\@firstoftwo
+    \else
+      \aftergroup\@secondoftwo
+    \fi
+  \endgroup
+  }
+
+\@input{\jobname.runtime.info}
+\@ifundefined{vtex@info@runtime@format}{\def\vtex@info@runtime@format{2019}}{}
 
 \newcommand\@ptsize{}
 \newif\if@restonecol
@@ -206,13 +221,12 @@
 \csuse{\fmt@name @load@printead}
 \csuse{\fmt@name @load@environment@saving}
 
-\@if@vtex@in@house{}{%
-  \RequirePackage{graphicx}%
-  }
-
 \@if@vtex@in@house{%
-  \usepackage{authorquery}%
-  }{}%
+    \usepackage{authorquery}%
+    \RequirePackage{hycorr}%
+  }{%
+    \RequirePackage{graphicx}%
+  }%
 
 %% >>> Metadata >>>
 \def\@publisher{International Press, Inc.}
@@ -838,6 +852,19 @@
 \DeclareMathSymbol{\Phi}{\mathalpha}{letters}{"08}
 \DeclareMathSymbol{\Psi}{\mathalpha}{letters}{"09}
 \DeclareMathSymbol{\Omega}{\mathalpha}{letters}{"0A}
+
+\AtBeginDocument{%
+  % orig definition in amsmath.sty: \renewcommand{\hookrightarrow}{\DOTSB\lhook\joinrel\rightarrow}
+  \renewcommand{\hookrightarrow}{%
+      {%
+        \binoppenalty=\maxdimen
+        \relpenalty=\maxdimen
+        \DOTSB\lhook\joinrel\rightarrow
+        \binoppenalty=700
+        \relpenalty=500
+      }%
+    }%
+  }
 
 \setlength\parindent{15\p@}
 \setlength\smallskipamount{3\p@ \@plus 1\p@ \@minus 1\p@}
@@ -2057,6 +2084,7 @@
 \DeclareFontShape{U}{old-cmsy}{m}{n}{ <->cmsy10 }{}
 \DeclareSymbolFont{old-symbols}{U}{cmsy}{m}{n}
 \SetSymbolFont{old-symbols}{normal}{U}{old-cmsy}{m}{n}
+\SetSymbolFont{old-symbols}{bold}{U}{old-cmsy}{b}{n}
 
 \DeclareMathSymbol{\leftrightarrow}{\mathrel}{old-symbols}{"24}
 \DeclareMathSymbol{\leftarrow}{\mathrel}{old-symbols}{"20}
@@ -2069,6 +2097,14 @@
 \DeclareMathSymbol{\searrow}{\mathrel}{old-symbols}{"26}
 \DeclareMathSymbol{\nwarrow}{\mathrel}{old-symbols}{"2D}
 \DeclareMathSymbol{\swarrow}{\mathrel}{old-symbols}{"2E}
+
+% needed for the bold symbol \lhook to be forced to normal font
+\DeclareSymbolFont{norm-letters}{U}{lmm}{m}{n}
+\SetSymbolFont{norm-letters}{normal}{OML}{lmm}{m}{n}%
+\SetSymbolFont{norm-letters}{bold}{OML}{lmm}{m}{n}%
+
+% \lhook is combined with \rightarrow, which has no bold equivalent, so both of them should be always forced to normal font
+\DeclareMathSymbol{\lhook}{\mathrel}{norm-letters}{"2C}
 
 \DeclareFontFamily{OT1}{ml-cmr}{\hyphenchar\font45 }
 \DeclareFontShape{OT1}{ml-cmr}{m}{n}
@@ -2987,6 +3023,7 @@
 %% >>> Sections >>>
 \@if@vtex@in@house{}{%
   \newcounter{subsection}%
+  \newcounter{subsubsection}%
   }
 \providecommand\section{}
 \renewcommand\section{%
