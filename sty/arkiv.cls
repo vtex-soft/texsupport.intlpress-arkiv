@@ -31,7 +31,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{arkiv}
-    [2022/09/14, v0.48 IntlPress/Arkiv class]
+    [2022/12/02, v0.50 IntlPress/Arkiv class]
 \def\fmt@name{arkiv}
 
 \long\def\@@ifstrequal#1#2{%
@@ -2080,23 +2080,26 @@
 \SetSymbolFont{largesymbols}{normal}{OMX}{cmex}{m}{n}
 \SetSymbolFont{largesymbols}{bold}  {OMX}{cmex}{m}{n}
 
-\DeclareFontFamily{U}{old-cmsy}{}
-\DeclareFontShape{U}{old-cmsy}{m}{n}{ <->cmsy10 }{}
-\DeclareSymbolFont{old-symbols}{U}{cmsy}{m}{n}
-\SetSymbolFont{old-symbols}{normal}{U}{old-cmsy}{m}{n}
-\SetSymbolFont{old-symbols}{bold}{U}{old-cmsy}{b}{n}
 
-\DeclareMathSymbol{\leftrightarrow}{\mathrel}{old-symbols}{"24}
-\DeclareMathSymbol{\leftarrow}{\mathrel}{old-symbols}{"20}
-\let\gets=\leftarrow
-\DeclareMathSymbol{\rightarrow}{\mathrel}{old-symbols}{"21}
-\DeclareMathDelimiter{\uparrow}{\mathrel}{old-symbols}{"22}{largesymbols}{"78}
-\DeclareMathDelimiter{\downarrow}{\mathrel}{old-symbols}{"23}{largesymbols}{"79}
-\DeclareMathDelimiter{\updownarrow}{\mathrel}{old-symbols}{"6C}{largesymbols}{"3F}
-\DeclareMathSymbol{\nearrow}{\mathrel}{old-symbols}{"25}
-\DeclareMathSymbol{\searrow}{\mathrel}{old-symbols}{"26}
-\DeclareMathSymbol{\nwarrow}{\mathrel}{old-symbols}{"2D}
-\DeclareMathSymbol{\swarrow}{\mathrel}{old-symbols}{"2E}
+\ifdefined\HCode\else
+  \DeclareFontFamily{U}{old-cmsy}{}
+  \DeclareFontShape{U}{old-cmsy}{m}{n}{ <->cmsy10 }{}
+  \DeclareSymbolFont{old-symbols}{U}{cmsy}{m}{n}
+  \SetSymbolFont{old-symbols}{normal}{U}{old-cmsy}{m}{n}
+  \SetSymbolFont{old-symbols}{bold}{U}{old-cmsy}{b}{n}
+
+  \DeclareMathSymbol{\leftrightarrow}{\mathrel}{old-symbols}{"24}
+  \DeclareMathSymbol{\leftarrow}{\mathrel}{old-symbols}{"20}
+  \let\gets=\leftarrow
+  \DeclareMathSymbol{\rightarrow}{\mathrel}{old-symbols}{"21}
+  \DeclareMathDelimiter{\uparrow}{\mathrel}{old-symbols}{"22}{largesymbols}{"78}
+  \DeclareMathDelimiter{\downarrow}{\mathrel}{old-symbols}{"23}{largesymbols}{"79}
+  \DeclareMathDelimiter{\updownarrow}{\mathrel}{old-symbols}{"6C}{largesymbols}{"3F}
+  \DeclareMathSymbol{\nearrow}{\mathrel}{old-symbols}{"25}
+  \DeclareMathSymbol{\searrow}{\mathrel}{old-symbols}{"26}
+  \DeclareMathSymbol{\nwarrow}{\mathrel}{old-symbols}{"2D}
+  \DeclareMathSymbol{\swarrow}{\mathrel}{old-symbols}{"2E}
+\fi
 
 % needed for the bold symbol \lhook to be forced to normal font
 \DeclareSymbolFont{norm-letters}{U}{lmm}{m}{n}
@@ -2620,7 +2623,18 @@
   \egroup
   }
 \def\ps@headings{%
+  \def\pseudo@odd@head@line{%
+    \running@font
+    \hbox{000}\space\rightmark\space\hbox{000}%
+    }%
+  \def\pseudo@even@head@line{%
+    \running@font
+    \hbox{000}\space\frenchspacing
+    \runningauthor@fmt{\leftmark}%
+    \space\hbox{000}%
+    }%
   \def\@evenhead{%
+    \check@head@line{even}{author}%
     \hbox to\textwidth{%
       \running@font
       \rlap{\hbox{\AfMthepage}}%
@@ -2630,12 +2644,22 @@
       }%
     }%
   \def\@oddhead{%
+    \check@head@line{odd}{title}%
     \hbox to\textwidth{%
       \running@font
       \hss\rightmark\hss
       \llap{\hbox{\AfMthepage}}%
       }%
     }%
+  }
+\def\check@head@line#1#2{%
+  \bgroup
+    \settowidth\@tempdima{\csname pseudo@#1@head@line\endcsname}%
+    \ifdim\@tempdima>\textwidth\relax
+      \ClassError{arkiv}{Running #2 is too long!}{}%
+      \global\def\check@head@line##1##2{\relax}%
+    \fi
+  \egroup
   }
 %% Running head of the starting page
 \def\ps@title{%

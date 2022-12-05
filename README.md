@@ -26,4 +26,4 @@ Please submit bug report, issues or feature requests to
 <a href="mailto:latex-support@vtex.lt">latex-support@vtex.lt</a>.
 </p>
 
-VTeX UAB, 2019/01/09
+VTeX UAB, 2022/12/05
