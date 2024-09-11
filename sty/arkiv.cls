@@ -31,7 +31,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{arkiv}
-    [2022/12/02, v0.50 IntlPress/Arkiv class]
+    [2024/09/11, v0.54 IntlPress/Arkiv class]
 \def\fmt@name{arkiv}
 
 \long\def\@@ifstrequal#1#2{%
@@ -45,9 +45,6 @@
     \fi
   \endgroup
   }
-
-\@input{\jobname.runtime.info}
-\@ifundefined{vtex@info@runtime@format}{\def\vtex@info@runtime@format{2019}}{}
 
 \newcommand\@ptsize{}
 \newif\if@restonecol
@@ -276,7 +273,9 @@
   }%
 \def\articletype#1{\gdef\@articletype{#1}}
 \@onlypreamble\articletype
-\def\aid#1{\gdef\@aid{#1}}
+\def\aid#1{%
+  \gdef\@aid{#1}%
+  }
 %% <<< Preamble <<<
 
 %% >>> noteins implementation >>>
@@ -2165,6 +2164,7 @@
 %% Special Mittag-Leffler fonts
 \@if@vtex@in@house
   {%
+    \special{mapfile=ml.map}%
     \DeclareFontFamily{OMS}{mlsy}{}%
     \DeclareFontShape{OMS}{mlsy}{m}{n}{ <-> mlsy10 }{}%
     \DeclareSymbolFont{mlsymbols}{OMS}{mlsy}{m}{n}%
@@ -2439,6 +2439,16 @@
         \def\vec#1{\accentchoice{#1}{\@vec}{\@widevec}}%
         \let\widetilde\tilde
         \let\widehat\hat
+        \let\genhat\@hat
+        \let\genwidehat\@widehat
+        \let\gentilde\@tilde
+        \let\genwidetilde\@widetilde
+        \let\genbar\@bar
+        \let\genwidebar\@widebar
+        \let\genbreve\@breve
+        \let\genwidebreve\@widebreve
+        \let\genvec\@vec
+        \let\genwidevec\@widevec
         }
 \fi
 
@@ -2588,7 +2598,7 @@
 \def\footnotesize{\normalfont\fontsize{8pt}{9pt}\selectfont}
 \let\scriptsize\footnotesize
 \let\tiny\footnotesize
-\def\title@font{\usefont{OT1}{ml-cmr}{m}{n}\fontsize{17.22pt}{6.6mm}\selectfont}
+\def\title@font{\fontsize{17.22pt}{6.6mm}\selectfont}
 \def\author@font{\normalfont\normalsize}
 \def\dedication@font{\normalfont\fontsize{9pt}{10dd}\selectfont}
 \def\abstract@font{\normalfont\fontsize{8pt}{3.85mm}\selectfont}
