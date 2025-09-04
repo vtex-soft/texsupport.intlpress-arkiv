@@ -31,9 +31,10 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{arkiv}
-    [2024/09/11, v0.54 IntlPress/Arkiv class]
+    [2025/09/03, v0.55 IntlPress/Arkiv class]
 \def\fmt@name{arkiv}
 
+% ----------------------
 \long\def\@@ifstrequal#1#2{%
   \begingroup
     \edef\etb@tempa{#1}%\edef\etb@tempa{\detokenize{#1}}%
@@ -2002,6 +2003,9 @@
 %% >>> from ml-afm-author.sty >>>
 \usepackage[leqno]{amsmath}
 \usepackage{amssymb}
+\ifdefined\noaccents@
+  \noaccents@
+\fi
 \@if@vtex@in@house{%
   \usepackage[cmtip]{xypic}%
   }{}
