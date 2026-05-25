@@ -31,7 +31,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{arkiv}
-    [2025/09/03, v0.55 IntlPress/Arkiv class]
+    [2026/05/25, v0.62 IntlPress/Arkiv class]
 \def\fmt@name{arkiv}
 
 % ----------------------
@@ -192,7 +192,15 @@
   \voffset-1in%
   }
 
-\csuse{\fmt@name @load@fileinfo}
+\IfFileExists{fileinfo.sty}{%
+    \ifdefined\jobstart@date@info
+    \else
+        \RequirePackage{fileinfo}\getFileInfo
+    \fi
+    }{%
+    \xdef\jobstart@date@info{\the\year\two@digits{\the\month}\two@digits{\the\day}}%
+    }
+
 \csuse{\fmt@name @load@vtex@ltxext}
 \csuse{\fmt@name @load@pagecrop}
 \csuse{\fmt@name @load@graphics@packages}
@@ -476,6 +484,12 @@
 \def\runningauthor#1{%
   \gdef\@runningauthor{#1}%
   }
+\ifnum\jobstart@date@info>22220003\relax
+  \let\runtitle\runningtitle
+  \def\runningtitle#1{%
+    \ClassError{arkiv}{Please use \string\runtitle\space instead of \string\runningtitle}{}%
+    }
+\fi
 
 \newcounter{author}
 \def\print@author@block{%
@@ -754,7 +768,13 @@
 \def\keyword@class{KWD}
 \setpkgattr{keyword}{KWD}{Key words and phrases}
 \setpkgattr{keyword}{MSC}{2010 Mathematics Subject Classification}
-\setpkgattr{keyword}{AMS}{AMS Subject Classification}
+\ifnum\jobstart@date@info>20260428\relax
+  \setpkgattr{keyword}{AMS}{%
+    \ClassError{arkiv}{Please use [class=MSC] instead of [class=AMS]}{}%
+    }
+\else
+  \setpkgattr{keyword}{AMS}{AMS Subject Classification}
+\fi
 \setpkgattr{keyword}{JEL}{JEL Classification}
 \setpkgattr{keyword}{PACS}{PACS}
 \setpkgattr{keyword}{titlesep}{:\ }
@@ -763,10 +783,22 @@
 \setpkgattr{keyword}{titlefont}{\itshape}
 
 \newif\if@firstkwd
-\newcommand\kwd[2][]{%
+\ifnum\jobstart@date@info>20260428\relax
+  \DeclareRobustCommand*\kwd{%
+    \@ifnextchar[%
+      {\ClassError{arkiv}{Don't use square brackets '[...]' in \string\kwd!}{}}%
+      {\@kwd[]}%
+    }
+\else
+  \DeclareRobustCommand*\kwd{%
+    \@ifnextchar[\@kwd{\@kwd[]}%
+    }
+\fi
+\newcommand\@kwd[2][]{%
   \bgroup
     \def\@tempa{#1}%
     \if@firstkwd
+      \unskip\ 
       \global\@firstkwdfalse
       \let\keyword@sep\@empty
     \fi
@@ -779,6 +811,17 @@
   \egroup
   \ignorespaces
   }
+\def\kwdgroup{%
+    \@ifnextchar[\@kwdgroup{\@kwdgroup[]}%
+    }
+\def\@kwdgroup[#1]#2{%
+    \@firstkwdtrue
+    \ifstrequal{#1}{type=primary}{\kwdgroup@primary}{}%
+    \ifstrequal{#1}{type=secondary}{\kwdgroup@secondary}{}%
+    #2%
+    }
+\setpkgattr{kwdgroup}{primary}{primary}
+\setpkgattr{kwdgroup}{secondary}{\unskip; secondary}
 
 \edef\sv@parindent{\the\parindent}
 \newtoks\document@keyword
@@ -790,6 +833,7 @@
         \rule\z@\footnotesep
         \long\def\start@tex@env##1[##2]##3\end@tex@env{%
           \@firstkwdtrue
+          \def\keyword@class{KWD}%
           \setkeys{keyword}{##2}%
           \bgroup
             \keyword@titlefont
